@@ -1,8 +1,8 @@
-// src/main.jsx
 import React from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 
+// Render the main App component into the root element
 createRoot(document.getElementById('root')).render(<App />)
