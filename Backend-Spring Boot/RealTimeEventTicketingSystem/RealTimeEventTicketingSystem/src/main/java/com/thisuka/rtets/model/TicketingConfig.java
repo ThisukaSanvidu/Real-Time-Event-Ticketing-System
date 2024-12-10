@@ -1,121 +1,61 @@
 package com.thisuka.rtets.model;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
-
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Min;
 
-
 /**
  * Configuration class for ticketing system properties
- * Reads values from application.properties with the prefix 'ticketing'
+ * We use default values here and update them from the UI via /api/config endpoint.
  */
-@Configuration
-@ConfigurationProperties(prefix = "ticketing")
+@Component
 @Validated
-public class TicketingConfig{
+public class TicketingConfig {
 
     @Min(value = 1, message = "max-ticket-capacity must be at least 1")
-    private int maxTicketCapacity;
-
+    private int maxTicketCapacity = 100; // default
     @Min(value = 1, message = "total-tickets must be at least 1")
-    private int totalTickets;
-
+    private int totalTickets = 100; // default
     @Min(value = 0, message = "initial-tickets-in-pool cannot be negative")
-    private int initialTicketsInPool;
-
+    private int initialTicketsInPool = 15; // default
     @Min(value = 1, message = "ticket-release-rate must be at least 1")
-    private int ticketReleaseRate;
-
+    private int ticketReleaseRate = 1000; // default
     @Min(value = 1, message = "customer-retrieval-rate must be at least 1")
-    private int customerRetrievalRate;
-
+    private int customerRetrievalRate = 3000; // default
     @Min(value = 1, message = "vendor-count must be at least 1")
-    private int vendorCount;
-
+    private int vendorCount = 10; // default
     @Min(value = 1, message = "customer-count must be at least 1")
-    private int customerCount;
+    private int customerCount = 20; // default
 
+    public int getMaxTicketCapacity() { return maxTicketCapacity; }
+    public void setMaxTicketCapacity(int maxTicketCapacity) { this.maxTicketCapacity = maxTicketCapacity; }
 
-    //getters and setters for accessing and modifying fields
-    public int getMaxTicketCapacity(){
-        return maxTicketCapacity;
-    }
+    public int getTotalTickets() { return totalTickets; }
+    public void setTotalTickets(int totalTickets) { this.totalTickets = totalTickets; }
 
-    public void setMaxTicketCapacity(int maxTicketCapacity){
-        this.maxTicketCapacity = maxTicketCapacity;
-    }
+    public int getInitialTicketsInPool() { return initialTicketsInPool; }
+    public void setInitialTicketsInPool(int initialTicketsInPool) { this.initialTicketsInPool = initialTicketsInPool; }
 
-    public int getTotalTickets(){
-        return totalTickets;
-    }
+    public int getTicketReleaseRate() { return ticketReleaseRate; }
+    public void setTicketReleaseRate(int ticketReleaseRate) { this.ticketReleaseRate = ticketReleaseRate; }
 
-    public void setTotalTickets(int totalTickets){
-        this.totalTickets = totalTickets;
-    }
+    public int getCustomerRetrievalRate() { return customerRetrievalRate; }
+    public void setCustomerRetrievalRate(int customerRetrievalRate) { this.customerRetrievalRate = customerRetrievalRate; }
 
-    public int getInitialTicketsInPool(){
-        return initialTicketsInPool;
-    }
+    public int getVendorCount() { return vendorCount; }
+    public void setVendorCount(int vendorCount) { this.vendorCount = vendorCount; }
 
-    public void setInitialTicketsInPool(int initialTicketsInPool){
-        this.initialTicketsInPool = initialTicketsInPool;
-    }
+    public int getCustomerCount() { return customerCount; }
+    public void setCustomerCount(int customerCount) { this.customerCount = customerCount; }
 
-    public int getTicketReleaseRate(){
-        return ticketReleaseRate;
-    }
-
-    public void setTicketReleaseRate(int ticketReleaseRate){
-        this.ticketReleaseRate = ticketReleaseRate;
-    }
-
-    public int getCustomerRetrievalRate(){
-        return customerRetrievalRate;
-    }
-
-    public void setCustomerRetrievalRate(int customerRetrievalRate){
-        this.customerRetrievalRate = customerRetrievalRate;
-    }
-
-    public int getVendorCount(){
-        return vendorCount;
-    }
-
-    public void setVendorCount(int vendorCount){
-        this.vendorCount = vendorCount;
-    }
-
-    public int getCustomerCount(){
-        return customerCount;
-    }
-
-    public void setCustomerCount(int customerCount){
-        this.customerCount = customerCount;
-    }
-
-
-    /**
-     * Custom validation to ensure total tickets do not exceed the maximum capacity
-     *
-     * @return True if the total tickets are valid, false otherwise
-     */
     @AssertTrue(message = "Total Tickets amount cannot exceed Maximum capacity. Please try again!")
     public boolean isTotalTicketsValid(){
-
         return totalTickets <= maxTicketCapacity;
     }
 
-    /**
-     * Custom validation to ensure initial tickets in the pool do not exceed total tickets
-     *
-     * @return True if the initial tickets are valid, false otherwise
-     */
     @AssertTrue(message = "Tickets added to the pool cannot exceed Total tickets amount. Please try again!")
     public boolean isInitialTicketsValid(){
-
         return initialTicketsInPool <= totalTickets;
     }
 }

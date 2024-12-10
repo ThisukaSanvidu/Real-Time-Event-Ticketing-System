@@ -16,6 +16,7 @@ public class CustomerTask implements Runnable{
     private final TicketPool ticketPool;  //Shared pool of tickets
     private final int purchaseInterval; //in milliseconds
     private final CustomerTicketPurchaseRepository customerTicketPurchaseRepository; // Repository to store purchases
+    private final LogService logService; // For logging
 
     private volatile boolean running = true;  //controls task execution
 
@@ -29,11 +30,13 @@ public class CustomerTask implements Runnable{
      * @param ticketPool Shared ticket pool
      * @param purchaseInterval Time interval between purchases
      * @param customerTicketPurchaseRepository Repository for customer purchases
+     * @param logService Log service for recording actions
      */
-    public CustomerTask(TicketPool ticketPool, int purchaseInterval, CustomerTicketPurchaseRepository customerTicketPurchaseRepository){
+    public CustomerTask(TicketPool ticketPool, int purchaseInterval, CustomerTicketPurchaseRepository customerTicketPurchaseRepository, LogService logService){
         this.ticketPool = ticketPool;
         this.purchaseInterval = purchaseInterval;
-        this.customerTicketPurchaseRepository = customerTicketPurchaseRepository; // Initialize repository
+        this.customerTicketPurchaseRepository = customerTicketPurchaseRepository;
+        this.logService = logService;
     }
 
 
@@ -42,6 +45,8 @@ public class CustomerTask implements Runnable{
         //Assign a unique name to the customer
         int currentCustomerNumber = customerNumber.incrementAndGet();
         String customerName = "Customer-" + currentCustomerNumber;
+
+        logService.addLog(customerName + " started.");
 
         while (running){
             try {
@@ -66,8 +71,10 @@ public class CustomerTask implements Runnable{
                             customerTicketPurchaseRepository.save(purchase);
 
                             //Logs the purchase
-                            System.out.println("Customer-" + currentCustomerNumber + " has bought " + ticket.getTicketId() +
-                                    " from the pool. Tickets currently available: " + ticketPool.getCurrentTicketCount());
+                            String msg = customerName + " has bought " + ticket.getTicketId() +
+                                    " from the pool. Tickets currently available: " + ticketPool.getCurrentTicketCount();
+                            System.out.println(msg);
+                            logService.addLog(msg);
                             ticketPool.notifyAll(); //Notify other threads
                         }
                     }
@@ -75,14 +82,17 @@ public class CustomerTask implements Runnable{
 
             }
             catch (InterruptedException e){
-                Thread.currentThread().interrupt();  //Handle thread interruption
-                System.err.println("Customer-" + customerName + " interrupted.");
+                Thread.currentThread().interrupt();
+                String msg = customerName + " interrupted.";
+                System.err.println(msg);
+                logService.addLog(msg);
                 break;
             }
         }
 
-        //Log the end of the customer's task
-        System.out.println("Customer-" + customerName + " stopped.");
+        String stopMsg = customerName + " stopped.";
+        System.out.println(stopMsg);
+        logService.addLog(stopMsg);
     }
 
     /**

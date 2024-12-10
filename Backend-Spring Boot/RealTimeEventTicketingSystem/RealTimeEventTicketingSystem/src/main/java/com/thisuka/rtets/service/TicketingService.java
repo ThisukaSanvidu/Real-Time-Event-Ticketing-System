@@ -25,6 +25,7 @@ public class TicketingService{
     private final TicketPool ticketPool;  //Shared pool of tickets
     private final VendorRepository vendorRepository;  //Repository for vendors
     private final CustomerTicketPurchaseRepository customerTicketPurchaseRepository; //Repository for customer purchases
+    private final LogService logService; // Log service to record actions
 
     private final List<VendorTask> vendorTasks = new ArrayList<>();  //Active vendor tasks
     private final List<CustomerTask> customerTasks = new ArrayList<>();  //Active customer tasks
@@ -33,11 +34,12 @@ public class TicketingService{
 
     @Autowired
     public TicketingService(TicketingConfig config, TicketPool ticketPool, VendorRepository vendorRepository,
-                            CustomerTicketPurchaseRepository customerTicketPurchaseRepository){
+                            CustomerTicketPurchaseRepository customerTicketPurchaseRepository, LogService logService){
         this.config = config;
         this.ticketPool = ticketPool;
         this.vendorRepository = vendorRepository;
-        this.customerTicketPurchaseRepository = customerTicketPurchaseRepository; // Initialize new field
+        this.customerTicketPurchaseRepository = customerTicketPurchaseRepository;
+        this.logService = logService;
     }
 
     /**
@@ -65,19 +67,21 @@ public class TicketingService{
         for (int i = 0; i < config.getVendorCount(); i++){
             Vendor vendor = vendors.get(i);
             int ticketsToRelease = ticketsPerVendor + (i == config.getVendorCount() - 1 ? extraTickets : 0);
-            VendorTask vendorTask = new VendorTask(ticketPool, config.getTicketReleaseRate(), ticketsToRelease, vendor, vendorRepository);
+            VendorTask vendorTask = new VendorTask(ticketPool, config.getTicketReleaseRate(), ticketsToRelease, vendor, vendorRepository, logService);
             vendorTasks.add(vendorTask);
             executorService.submit(vendorTask);
         }
 
         //start customer tasks
         for (int i = 1; i <= config.getCustomerCount(); i++){
-            CustomerTask customerTask = new CustomerTask(ticketPool, config.getCustomerRetrievalRate(), customerTicketPurchaseRepository); // Pass PurchaseRepository
+            CustomerTask customerTask = new CustomerTask(ticketPool, config.getCustomerRetrievalRate(), customerTicketPurchaseRepository, logService);
             customerTasks.add(customerTask);
             executorService.submit(customerTask);
         }
 
-        System.out.println(config.getVendorCount() + " vendor(s) and " + config.getCustomerCount() + " customer(s) threads started.");
+        String startMsg = config.getVendorCount() + " vendor(s) and " + config.getCustomerCount() + " customer(s) threads started.";
+        System.out.println(startMsg);
+        logService.addLog(startMsg);
     }
 
     /**
@@ -99,8 +103,9 @@ public class TicketingService{
         vendorTasks.clear();
         customerTasks.clear();
 
-
-        System.out.println("All vendors and customers stopped.");
+        String stopMsg = "All vendors and customers stopped.";
+        System.out.println(stopMsg);
+        logService.addLog(stopMsg);
     }
 
     /**

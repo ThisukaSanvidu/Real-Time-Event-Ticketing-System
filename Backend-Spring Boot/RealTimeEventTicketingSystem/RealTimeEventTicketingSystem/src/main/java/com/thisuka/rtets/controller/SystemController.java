@@ -1,61 +1,70 @@
 package com.thisuka.rtets.controller;
 
-import com.thisuka.rtets.service.TicketingService;
 import com.thisuka.rtets.model.TicketingConfig;
+import com.thisuka.rtets.service.LogService;
+import com.thisuka.rtets.service.TicketingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/api")
 public class SystemController{
 
-    //Service layer to manage ticketing system logic
     private final TicketingService ticketingService;
-    //Configuration properties for ticketing system
     private final TicketingConfig config;
+    private final LogService logService;
 
-
-    //Constructor based dependency injection
     @Autowired
-    public SystemController(TicketingService ticketingService, TicketingConfig config){
-
+    public SystemController(TicketingService ticketingService, TicketingConfig config, LogService logService){
         this.ticketingService = ticketingService;
         this.config = config;
+        this.logService = logService;
     }
 
-    /**
-     * Starts the ticketing system and initializes vendor and customers
-     *
-     * @return confirmation message about the system start
-     */
     @PostMapping("/start")
     public String startSystem(){
-
-        ticketingService.startSystem();  //Start the ticketing system
+        ticketingService.startSystem();
         return "Ticketing system started with " + config.getVendorCount() + " vendor(s) and " + config.getCustomerCount() + " customer(s) threads started.";
     }
 
-    /**
-     * Stops the ticketing system by stopping all threads
-     *
-     * @return confirmation message about the system stop
-     */
     @PostMapping("/stop")
     public String stopSystem(){
-
-        ticketingService.stopSystem();  //stop the ticketing system
+        ticketingService.stopSystem();
         return "Ticketing system stopped.";
     }
 
-    /**
-     * Retrieves the current state of the ticketing system
-     *
-     * @return A string describing the current system status
-     */
     @GetMapping("/status")
     public String getStatus(){
+        return ticketingService.getStatus();
+    }
 
-        return ticketingService.getStatus();  //fetch and return the system status
+    // New endpoint to update config from UI
+    @PostMapping("/config")
+    public String updateConfig(@RequestBody TicketingConfig newConfigValues) {
+        config.setMaxTicketCapacity(newConfigValues.getMaxTicketCapacity());
+        config.setTotalTickets(newConfigValues.getTotalTickets());
+        config.setInitialTicketsInPool(newConfigValues.getInitialTicketsInPool());
+        config.setTicketReleaseRate(newConfigValues.getTicketReleaseRate());
+        config.setCustomerRetrievalRate(newConfigValues.getCustomerRetrievalRate());
+        config.setVendorCount(newConfigValues.getVendorCount());
+        config.setCustomerCount(newConfigValues.getCustomerCount());
+
+        if(!config.isTotalTicketsValid()) {
+            return "Total Tickets amount cannot exceed Maximum capacity. Please try again!";
+        }
+        if(!config.isInitialTicketsValid()) {
+            return "Tickets added to the pool cannot exceed Total tickets amount. Please try again!";
+        }
+
+        return "Configuration updated successfully.";
+    }
+
+    // Endpoint to fetch system logs
+    @GetMapping("/logs")
+    public List<String> getLogs(){
+        return logService.getLogs();
     }
 }

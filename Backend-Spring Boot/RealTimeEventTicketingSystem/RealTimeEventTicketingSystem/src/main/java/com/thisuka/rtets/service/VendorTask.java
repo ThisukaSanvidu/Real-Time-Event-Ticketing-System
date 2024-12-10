@@ -4,7 +4,6 @@ import com.thisuka.rtets.entity.Ticket;
 import com.thisuka.rtets.entity.Vendor;
 import com.thisuka.rtets.repository.VendorRepository;
 
-
 /**
  * Represents a vendor task that adds tickets to the pool
  * Implements Runnable to run as a separate thread
@@ -16,6 +15,7 @@ public class VendorTask implements Runnable{
     private final int ticketsToRelease;
     private final VendorRepository vendorRepository;
     private final Vendor vendor;
+    private final LogService logService; // Log service to record vendor actions
 
     private volatile boolean running = true;  //controls task execution
 
@@ -28,13 +28,15 @@ public class VendorTask implements Runnable{
      * @param ticketsToRelease Total tickets to be released by this vendor
      * @param vendor         Vendor entity associated with this task
      * @param vendorRepository Repository for saving vendor data
+     * @param logService     Service for logging
      */
-    public VendorTask(TicketPool ticketPool, int releaseInterval, int ticketsToRelease, Vendor vendor, VendorRepository vendorRepository){
+    public VendorTask(TicketPool ticketPool, int releaseInterval, int ticketsToRelease, Vendor vendor, VendorRepository vendorRepository, LogService logService){
         this.ticketPool = ticketPool;
         this.releaseInterval = releaseInterval;
         this.ticketsToRelease = ticketsToRelease;
         this.vendor = vendor;
         this.vendorRepository = vendorRepository;
+        this.logService = logService;
     }
 
 
@@ -42,6 +44,7 @@ public class VendorTask implements Runnable{
     public void run(){
 
         int releasedTickets = 0;  //Track the no of tickets released
+        logService.addLog("Vendor-" + vendor.getId() + " started.");
 
         while (running && releasedTickets < ticketsToRelease){
             try {
@@ -55,16 +58,22 @@ public class VendorTask implements Runnable{
                         if (added){
                             vendorRepository.save(vendor); //save vendor details
                             releasedTickets++;
-                            System.out.println("Vendor-" + vendor.getId() + " added " + ticket.getTicketId() +
-                                    " to the pool. Tickets currently available: " + ticketPool.getCurrentTicketCount());
+                            String msg = "Vendor-" + vendor.getId() + " added " + ticket.getTicketId() +
+                                    " to the pool. Tickets currently available: " + ticketPool.getCurrentTicketCount();
+                            System.out.println(msg);
+                            logService.addLog(msg);
                             ticketPool.notifyAll();
                         }
                         else{
-                            System.out.println("Vendor-" + vendor.getId() + " could not add " + ticket.getTicketId() + " as the pool is full.");
+                            String msg = "Vendor-" + vendor.getId() + " could not add " + ticket.getTicketId() + " as the pool is full.";
+                            System.out.println(msg);
+                            logService.addLog(msg);
                         }
                     }
                     else{
-                        System.out.println("Vendor-" + vendor.getId() + " found the pool full. Waiting...");
+                        String msg = "Vendor-" + vendor.getId() + " found the pool full. Waiting...";
+                        System.out.println(msg);
+                        logService.addLog(msg);
                         ticketPool.wait();
                     }
                 }
@@ -72,12 +81,16 @@ public class VendorTask implements Runnable{
             }
             catch (InterruptedException e){
                 Thread.currentThread().interrupt();
-                System.err.println("Vendor-" + vendor.getId() + " interrupted.");
+                String msg = "Vendor-" + vendor.getId() + " interrupted.";
+                System.err.println(msg);
+                logService.addLog(msg);
                 break;
             }
         }
 
-        System.out.println("Vendor-" + vendor.getId() + " has added all assigned tickets. Vendor-" + vendor.getId() + " stopped.");
+        String stopMsg = "Vendor-" + vendor.getId() + " has added all assigned tickets. Vendor-" + vendor.getId() + " stopped.";
+        System.out.println(stopMsg);
+        logService.addLog(stopMsg);
     }
 
     public void stop(){
