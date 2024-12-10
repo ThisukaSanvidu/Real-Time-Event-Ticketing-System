@@ -79,9 +79,6 @@ public class TicketingService{
             executorService.submit(customerTask);
         }
 
-        String startMsg = config.getVendorCount() + " vendor(s) and " + config.getCustomerCount() + " customer(s) threads started.";
-        System.out.println(startMsg);
-        logService.addLog(startMsg);
     }
 
     /**

@@ -1,32 +1,31 @@
 package com.thisuka.rtets.model;
 
 import org.springframework.stereotype.Component;
-import org.springframework.validation.annotation.Validated;
-import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.AssertTrue;
 
 /**
- * Configuration class for ticketing system properties
- * We use default values here and update them from the UI via /api/config endpoint.
+ * Configuration class for ticketing system properties.
+ * Now no longer depends on application.properties.
+ * Uses defaults and can be updated at runtime via /api/config
  */
 @Component
-@Validated
 public class TicketingConfig {
 
     @Min(value = 1, message = "max-ticket-capacity must be at least 1")
-    private int maxTicketCapacity = 100; // default
+    private int maxTicketCapacity = 100;
     @Min(value = 1, message = "total-tickets must be at least 1")
-    private int totalTickets = 100; // default
+    private int totalTickets = 100;
     @Min(value = 0, message = "initial-tickets-in-pool cannot be negative")
-    private int initialTicketsInPool = 15; // default
+    private int initialTicketsInPool = 15;
     @Min(value = 1, message = "ticket-release-rate must be at least 1")
-    private int ticketReleaseRate = 1000; // default
+    private int ticketReleaseRate = 1000;
     @Min(value = 1, message = "customer-retrieval-rate must be at least 1")
-    private int customerRetrievalRate = 3000; // default
+    private int customerRetrievalRate = 3000;
     @Min(value = 1, message = "vendor-count must be at least 1")
-    private int vendorCount = 10; // default
+    private int vendorCount = 10;
     @Min(value = 1, message = "customer-count must be at least 1")
-    private int customerCount = 20; // default
+    private int customerCount = 20;
 
     public int getMaxTicketCapacity() { return maxTicketCapacity; }
     public void setMaxTicketCapacity(int maxTicketCapacity) { this.maxTicketCapacity = maxTicketCapacity; }
