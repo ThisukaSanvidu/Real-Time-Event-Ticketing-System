@@ -10,19 +10,23 @@ import java.util.List;
  * All logs stored in-memory for demonstration.
  */
 @Service
-public class LogService {
+public class LogService{
 
     private final List<String> logs = new ArrayList<>();
 
-    public synchronized void addLog(String message) {
+
+    public synchronized void addLog(String message){
+
         logs.add(message);
     }
 
-    public synchronized List<String> getLogs() {
+    public synchronized List<String> getLogs(){
+
         return new ArrayList<>(logs);
     }
 
-    public synchronized void clearLogs() {
+    public synchronized void clearLogs(){
+
         logs.clear();
     }
 }
