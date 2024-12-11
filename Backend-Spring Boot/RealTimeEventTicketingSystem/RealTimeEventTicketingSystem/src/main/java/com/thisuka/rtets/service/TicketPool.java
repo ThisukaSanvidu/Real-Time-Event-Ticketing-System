@@ -9,10 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 
-/**
- * Manages the ticket pool for the ticketing system.
- * Handles ticket addition, removal, and pool-related operations.
- */
+//Manages the ticket pool for the ticketing system
 @Service
 public class TicketPool{
 
@@ -22,12 +19,7 @@ public class TicketPool{
     private int ticketCounter = 0; //Counter for generating unique ticket IDs
 
 
-    /**
-     * Constructor to initialize the TicketPool with dependencies.
-     *
-     * @param ticketRepository Repository to save and retrieve ticket data.
-     * @param config Configuration settings for the ticketing system.
-     */
+    //Constructor to initialize the TicketPool with dependencies
     @Autowired
     public TicketPool(TicketRepository ticketRepository, TicketingConfig config){
 
@@ -35,9 +27,7 @@ public class TicketPool{
         this.config = config;
     }
 
-    /**
-     * Initializes the pool with the specified number of tickets
-     */
+    //Initializes the pool with the specified number of tickets
     public void initializePool(){
 
         for (int i = 0; i < config.getInitialTicketsInPool(); i++){
@@ -48,12 +38,7 @@ public class TicketPool{
 
     }
 
-    /**
-     * Adds a ticket to the pool if capacity allows
-     *
-     * @param ticket Ticket to be added
-     * @return true if added successfully, false otherwise
-     */
+    //Adds a ticket to the pool if capacity allows
     public synchronized boolean addTicket(Ticket ticket){
 
         if (availableTickets.size() >= getMaxCapacity()){
@@ -64,11 +49,7 @@ public class TicketPool{
         return true;
     }
 
-    /**
-     * Removes a ticket from the pool for purchase
-     *
-     * @return The removed ticket, or null if no tickets are available
-     */
+    //Removes a ticket from the pool for purchase
     public synchronized Ticket purchaseTicket(){
 
         Ticket ticket = availableTickets.poll();  //Remove a ticket from the pool
@@ -79,31 +60,19 @@ public class TicketPool{
         return ticket;
     }
 
-    /**
-     * Retrieves the current number of tickets in the pool
-     *
-     * @return The size of the ticket pool
-     */
+    //Retrieves the current number of tickets in the pool
     public int getCurrentTicketCount(){
 
         return availableTickets.size();
     }
 
-    /**
-     * Retrieves the maximum ticket capacity
-     *
-     * @return The maximum capacity from the configuration
-     */
+    //Retrieves the maximum ticket capacity
     public int getMaxCapacity(){
 
         return config.getMaxTicketCapacity();
     }
 
-    /**
-     * Generates a unique ticket with a new ID
-     *
-     * @return A new Ticket object
-     */
+    //Generates a unique ticket with a new ID
     public synchronized Ticket generateNextTicket(){
 
         ticketCounter++;
@@ -111,41 +80,25 @@ public class TicketPool{
         return new Ticket(ticketId);  //Return a new ticket object
     }
 
-    /**
-     * Checks if the pool is empty
-     *
-     * @return True if the pool is empty, false otherwise
-     */
+    //Checks if the pool is empty
     public synchronized boolean isEmpty(){
 
         return availableTickets.isEmpty();
     }
 
-    /**
-     * Retrieves the total number of tickets added to the pool
-     *
-     * @return The total count of tickets added
-     */
+    //Retrieves the total number of tickets added to the pool
     public long getTotalTicketsAdded(){
 
         return ticketRepository.count();
     }
 
-    /**
-     * Retrieves the total number of tickets sold
-     *
-     * @return The count of tickets sold
-     */
+    //Retrieves the total number of tickets sold
     public long getTotalTicketsSold(){
 
         return ticketRepository.count() - availableTickets.size();
     }
 
-    /**
-     * Retrieves the total number of tickets to be released
-     *
-     * @return The total ticket count from the configuration
-     */
+    //Retrieves the total number of tickets to be released
     public int getTotalTicketsToRelease(){
 
         return config.getTotalTickets();

@@ -7,10 +7,7 @@ import com.thisuka.rtets.repository.CustomerTicketPurchaseRepository;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-/**
- * Represents a customer task that purchases tickets from the pool
- * Implements the Runnable interface to run as a separate thread
- */
+//Represents a customer task that purchases tickets from the pool and Implements the Runnable interface to run as a separate thread
 public class CustomerTask implements Runnable{
 
     private final TicketPool ticketPool;  //Shared pool of tickets
@@ -24,14 +21,7 @@ public class CustomerTask implements Runnable{
     private static final AtomicInteger customerNumber = new AtomicInteger(0);
 
 
-    /**
-     * Constructor for CustomerTask
-     *
-     * @param ticketPool Shared ticket pool
-     * @param purchaseInterval Time interval between purchases
-     * @param customerTicketPurchaseRepository Repository for customer purchases
-     * @param logService Log service for recording actions
-     */
+    //Constructor for CustomerTask
     public CustomerTask(TicketPool ticketPool, int purchaseInterval, CustomerTicketPurchaseRepository customerTicketPurchaseRepository, LogService logService){
         this.ticketPool = ticketPool;
         this.purchaseInterval = purchaseInterval;
@@ -95,9 +85,7 @@ public class CustomerTask implements Runnable{
         logService.addLog(stopMsg);
     }
 
-    /**
-     * Stops the customer's task by updating the running flag.
-     */
+    //Stops the customer's task
     public void stop(){
         running = false;
     }

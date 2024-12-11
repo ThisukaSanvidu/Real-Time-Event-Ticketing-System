@@ -14,10 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-/**
- * Service layer to manage the ticketing system logic
- * Handles initialization, thread management, and system status
- */
+//Service layer to manage the ticketing system logic and Handles initialization, thread management, and system status
 @Service
 public class TicketingService{
 
@@ -42,9 +39,7 @@ public class TicketingService{
         this.logService = logService;
     }
 
-    /**
-     * Starts the ticketing system by initializing the ticket pool and threads
-     */
+    //Starts the ticketing system by initializing the ticket pool and threads
     public void startSystem(){
         //Initialize the ticket pool
         ticketPool.initializePool();
@@ -81,9 +76,7 @@ public class TicketingService{
 
     }
 
-    /**
-     * Stops the ticketing system by interrupting all threads
-     */
+    //Stops the ticketing system by interrupting all threads
     public void stopSystem(){
         //stop vendor threads
         for (VendorTask vendorTask : vendorTasks){
@@ -105,11 +98,7 @@ public class TicketingService{
         logService.addLog(stopMsg);
     }
 
-    /**
-     * Retrieves the current status of the ticketing system
-     *
-     * @return A string summarizing the system's status
-     */
+    //Retrieves the current status of the ticketing system
     public String getStatus(){
         long totalTicketsAdded = ticketPool.getTotalTicketsAdded();
         long totalTicketsSold = ticketPool.getTotalTicketsSold();
@@ -119,9 +108,7 @@ public class TicketingService{
                 currentPoolSize, totalTicketsAdded, totalTicketsSold, vendorTasks.size(), customerTasks.size());
     }
 
-    /**
-     * Ensures all threads are stopped when the application shuts down
-     */
+    //Ensures all threads are stopped when the application shuts down
     @PreDestroy
     public void onDestroy(){
         stopSystem();

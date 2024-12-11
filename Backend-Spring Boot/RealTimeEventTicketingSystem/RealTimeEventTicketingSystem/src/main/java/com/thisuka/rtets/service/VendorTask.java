@@ -4,10 +4,7 @@ import com.thisuka.rtets.entity.Ticket;
 import com.thisuka.rtets.entity.Vendor;
 import com.thisuka.rtets.repository.VendorRepository;
 
-/**
- * Represents a vendor task that adds tickets to the pool
- * Implements Runnable to run as a separate thread
- */
+//Represents a vendor task that adds tickets to the pool and Implements Runnable to run as a separate thread
 public class VendorTask implements Runnable{
 
     private final TicketPool ticketPool;
@@ -20,16 +17,7 @@ public class VendorTask implements Runnable{
     private volatile boolean running = true;  //controls task execution
 
 
-    /**
-     * Constructor for VendorTask
-     *
-     * @param ticketPool     Shared ticket pool
-     * @param releaseInterval Time interval for ticket releases
-     * @param ticketsToRelease Total tickets to be released by this vendor
-     * @param vendor         Vendor entity associated with this task
-     * @param vendorRepository Repository for saving vendor data
-     * @param logService     Service for logging
-     */
+    //Constructor for VendorTask
     public VendorTask(TicketPool ticketPool, int releaseInterval, int ticketsToRelease, Vendor vendor, VendorRepository vendorRepository, LogService logService){
         this.ticketPool = ticketPool;
         this.releaseInterval = releaseInterval;

@@ -17,26 +17,26 @@ public class Vendor{
     public Vendor(){
     }
 
-    /**
-     * Constructor to create a vendor with a specific name
-     *
-     * @param name The name of the vendor
-     */
+    //Constructor to create a vendor with a specific name
     public Vendor(String name){
+
         this.name = name;
     }
 
     //Getters and Setters for accessing and modifying fields
     public Long getId(){
+
         return id;
     }
 
 
     public String getName(){
+
         return name;
     }
 
     public void setName(String name){
+
         this.name = name;
     }
 

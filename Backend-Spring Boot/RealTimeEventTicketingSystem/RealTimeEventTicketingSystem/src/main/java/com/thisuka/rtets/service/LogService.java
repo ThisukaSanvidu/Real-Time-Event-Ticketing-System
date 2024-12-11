@@ -5,10 +5,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Service to store system logs from vendors and customers
- * All logs stored in-memory for demonstration.
- */
+//Service to store system logs from vendors and customers
 @Service
 public class LogService{
 

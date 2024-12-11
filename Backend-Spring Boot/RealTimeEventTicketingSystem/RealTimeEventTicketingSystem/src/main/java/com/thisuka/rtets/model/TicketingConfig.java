@@ -4,11 +4,7 @@ import org.springframework.stereotype.Component;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.AssertTrue;
 
-/**
- * Configuration class for ticketing system properties.
- * Now no longer depends on application.properties.
- * Uses defaults and can be updated at runtime via /api/config
- */
+
 @Component
 public class TicketingConfig {
 
@@ -33,7 +29,7 @@ public class TicketingConfig {
     @Min(value = 1, message = "customer-count must be at least 1")
     private int customerCount = 20;
 
-
+    //Getters and Setters to access and modify private fields
     public int getMaxTicketCapacity() {
         return maxTicketCapacity; }
 

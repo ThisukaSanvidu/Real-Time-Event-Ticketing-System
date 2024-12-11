@@ -21,12 +21,7 @@ public class CustomerTicketPurchase{
     public CustomerTicketPurchase(){
     }
 
-    /**
-     * Constructor with customer name and ticket ID
-     *
-     * @param customerName Name of the customer making the purchase
-     * @param ticketIdPurchased ID of the ticket purchased
-     */
+    //Constructor with customer name and ticket ID
     public CustomerTicketPurchase(String customerName, Long ticketIdPurchased){
 
         this.customerName = customerName;
@@ -36,22 +31,27 @@ public class CustomerTicketPurchase{
 
     //Getters and Setters for accessing and modifying fields
     public Long getId(){
+
         return id;
     }
 
     public String getCustomerName(){
+
         return customerName;
     }
 
     public void setCustomerName(String customerName){
+
         this.customerName = customerName;
     }
 
     public Long getTicketIdPurchased(){
+
         return ticketIdPurchased;
     }
 
     public void setTicketIdPurchased(Long ticketIdPurchased){
+
         this.ticketIdPurchased = ticketIdPurchased;
     }
 }

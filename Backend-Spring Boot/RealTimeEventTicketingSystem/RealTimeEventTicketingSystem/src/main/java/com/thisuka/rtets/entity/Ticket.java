@@ -17,25 +17,25 @@ public class Ticket{
     public Ticket(){
     }
 
-    /**
-     * Constructor to create a ticket with a specific ID
-     *
-     * @param ticketId The unique ID of the ticket
-     */
+    //Constructor to create a ticket with a specific ID
     public Ticket(String ticketId){
+
         this.ticketId = ticketId;
     }
 
     // Getters and setters for accessing and modifying fields
     public Long getId(){
+
         return id;
     }
 
     public String getTicketId(){
+
         return ticketId;
     }
 
     public void setTicketId(String ticketId){
+
         this.ticketId = ticketId;
     }
 }
